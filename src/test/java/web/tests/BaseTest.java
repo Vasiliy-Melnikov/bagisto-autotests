@@ -25,7 +25,6 @@ public class BaseTest {
         Configuration.browser = cfg.browser();
         Configuration.browserSize = cfg.browserSize();
         Configuration.pageLoadStrategy = cfg.pageLoadStrategy();
-        Configuration.browserCapabilities = new DesiredCapabilities();
 
         if (!cfg.browserVersion().isBlank()) {
             Configuration.browserVersion = cfg.browserVersion();
@@ -36,8 +35,7 @@ public class BaseTest {
         if (cfg.isRemote()) {
             if (cfg.remoteUrl().isBlank()) {
                 throw new IllegalStateException(
-                        "isRemote=true, но remoteUrl пустой в classpath:config/" +
-                                System.getProperty("env", "local") + ".properties"
+                        "env=remote, но remoteUrl пустой в config/remote.properties"
                 );
             }
 
@@ -48,14 +46,18 @@ public class BaseTest {
                     "enableVNC", cfg.enableVNC(),
                     "enableVideo", cfg.enableVideo()
             ));
+
             Configuration.browserCapabilities = caps;
+
         } else {
             Configuration.remote = null;
+            Configuration.browserCapabilities = new DesiredCapabilities();
         }
 
-        SelenideLogger.addListener("allure", new AllureSelenide()
-                .screenshots(true)
-                .savePageSource(false));
+        SelenideLogger.addListener(
+                "allure",
+                new AllureSelenide().screenshots(true).savePageSource(false)
+        );
     }
 
     @BeforeEach
