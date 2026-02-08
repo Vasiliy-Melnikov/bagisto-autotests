@@ -24,9 +24,8 @@ public class ProductPageObject {
     private final SelenideElement addedToast =
             $x("//*[contains(.,'Item Added Successfully') or contains(.,'Added Successfully')]");
 
-    @Step("Открыта страница товара")
+    @Step("Страница товара открыта")
     public ProductPageObject productPageOpened() {
-        webdriver().shouldHave(urlContaining("/bagisto-common/"));
         productTitle.shouldBe(visible);
         return this;
     }

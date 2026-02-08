@@ -10,9 +10,11 @@ import static com.codeborne.selenide.Selenide.$$x;
 public class SearchResultsPageObject {
 
     private final ElementsCollection productLinks = $$x(
-            "//main//a[contains(@href,'/bagisto-common/') " +
-                    "and not(contains(@href,'/search')) " +
-                    "and not(contains(@href,'/checkout'))]"
+            "//main//a[" +
+                    "not(contains(@href,'/search')) " +
+                    "and not(contains(@href,'/checkout')) " +
+                    "and not(contains(@href,'#'))" +
+                    "]"
     ).filter(visible);
 
     @Step("Проверить, что результаты поиска отображаются")
