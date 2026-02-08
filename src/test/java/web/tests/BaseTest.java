@@ -1,51 +1,61 @@
 package web.tests;
 
 import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import web.config.WebDriverConfig;
+import web.config.WebDriverConfigProvider;
 import web.helpers.Attachments;
 
+import java.util.Map;
+
+import static com.codeborne.selenide.Selenide.sessionId;
 import static com.codeborne.selenide.Selenide.closeWebDriver;
 
 public class BaseTest {
 
     @BeforeAll
-    static void setup() {
-        Configuration.baseUrl = System.getProperty("baseUrl", "https://demo.bagisto.com");
-        Configuration.browser = System.getProperty("browser", "chrome");
+    static void setupSelenideConfig() {
+        WebDriverConfig cfg = WebDriverConfigProvider.get();
+        Configuration.baseUrl = cfg.baseUrl();
 
-        String browserVersion = System.getProperty("browserVersion");
-        if (browserVersion != null && !browserVersion.isBlank()) {
-            Configuration.browserVersion = browserVersion;
+        Configuration.browser = cfg.browser();
+        Configuration.browserSize = cfg.browserSize();
+        Configuration.pageLoadStrategy = cfg.pageLoadStrategy();
+
+        if (!cfg.browserVersion().isBlank()) {
+            Configuration.browserVersion = cfg.browserVersion();
         }
 
-        Configuration.browserSize = System.getProperty("browserSize", "1920x1080");
-        Configuration.pageLoadStrategy = "eager";
-        String env = System.getProperty("env", "local").toLowerCase();
-        String remoteUrl = System.getProperty("remote"); // важно: -Dremote=...
-        if ("remote".equals(env)) {
-            if (remoteUrl == null || remoteUrl.isBlank()) {
-                throw new IllegalStateException(
-                        "env=remote задан, но не передан -Dremote=<selenoid/grid url>. " +
-                                "Пример: -Dremote=https://selenoid.autotests.cloud/wd/hub"
-                );
+        if (cfg.isRemote()) {
+            if (cfg.remoteUrl().isBlank()) {
+                throw new IllegalStateException("isRemote=true, но remoteUrl пустой в config/" +
+                        System.getProperty("env", "local") + ".properties");
             }
-            Configuration.remote = remoteUrl;
+
+            Configuration.remote = cfg.remoteUrl();
+
             DesiredCapabilities caps = new DesiredCapabilities();
-            caps.setCapability("enableVNC", true);
-            caps.setCapability("enableVideo", true);
+            caps.setCapability("selenoid:options", Map.of(
+                    "enableVNC", cfg.enableVNC(),
+                    "enableVideo", cfg.enableVideo()
+            ));
             Configuration.browserCapabilities = caps;
         } else {
             Configuration.remote = null;
         }
+    }
 
+    @BeforeEach
+    void addAllureListener() {
         SelenideLogger.addListener("allure", new AllureSelenide()
                 .screenshots(true)
-                .savePageSource(false));
+                .savePageSource(false)
+        );
     }
 
     @AfterEach
@@ -57,6 +67,7 @@ public class BaseTest {
         closeWebDriver();
     }
 }
+
 
 
 
