@@ -1,14 +1,16 @@
-package web.config;
+package config;
 
 import org.aeonbits.owner.Config;
 
+import java.net.URL;
+
 @Config.Sources({
-        "system:properties",
         "classpath:config/${env}.properties"
 })
 public interface WebDriverConfig extends Config {
 
     @Key("baseUrl")
+    @DefaultValue("https://demo.bagisto.com")
     String baseUrl();
 
     @Key("browser")
@@ -32,15 +34,14 @@ public interface WebDriverConfig extends Config {
     boolean isRemote();
 
     @Key("remoteUrl")
-    @DefaultValue("")
-    String remoteUrl();
+    URL remoteUrl();
 
     @Key("enableVNC")
-    @DefaultValue("true")
+    @DefaultValue("false")
     boolean enableVNC();
 
     @Key("enableVideo")
-    @DefaultValue("true")
+    @DefaultValue("false")
     boolean enableVideo();
 }
 
