@@ -34,13 +34,13 @@ public class Attachments {
                 "videoUrlPattern",
                 "https://selenoid.autotests.cloud/video/{sessionId}.mp4"
         );
-        if (videoUrlPattern == null || videoUrlPattern.isBlank()) return;
 
-        String sId = sessionId() != null ? sessionId().toString() : null;
+        String sId = Selenide.sessionId() != null ? Selenide.sessionId().toString() : null;
         if (sId == null || sId.isBlank()) return;
 
         String url = videoUrlPattern.replace("{sessionId}", sId);
         Allure.addAttachment("Video", "text/uri-list", url);
     }
+
 }
 

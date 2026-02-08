@@ -1,6 +1,7 @@
 package web.tests;
 
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.AfterEach;
@@ -13,7 +14,6 @@ import web.helpers.Attachments;
 
 import java.util.Map;
 
-import static com.codeborne.selenide.Selenide.sessionId;
 import static com.codeborne.selenide.Selenide.closeWebDriver;
 
 public class BaseTest {
@@ -21,23 +21,27 @@ public class BaseTest {
     @BeforeAll
     static void setupSelenideConfig() {
         WebDriverConfig cfg = WebDriverConfigProvider.get();
-        Configuration.baseUrl = cfg.baseUrl();
 
+        Configuration.baseUrl = cfg.baseUrl();
         Configuration.browser = cfg.browser();
         Configuration.browserSize = cfg.browserSize();
         Configuration.pageLoadStrategy = cfg.pageLoadStrategy();
+        Configuration.timeout = Long.parseLong(System.getProperty("timeout", "15000"));
 
-        if (!cfg.browserVersion().isBlank()) {
-            Configuration.browserVersion = cfg.browserVersion();
+        String browserVersion = cfg.browserVersion();
+        if (browserVersion != null && !browserVersion.isBlank()) {
+            Configuration.browserVersion = browserVersion;
         }
-
         if (cfg.isRemote()) {
-            if (cfg.remoteUrl().isBlank()) {
-                throw new IllegalStateException("isRemote=true, но remoteUrl пустой в config/" +
-                        System.getProperty("env", "local") + ".properties");
+            String remoteUrl = cfg.remoteUrl();
+            if (remoteUrl == null || remoteUrl.isBlank()) {
+                throw new IllegalStateException(
+                        "isRemote=true, но remoteUrl пустой в config/" +
+                                System.getProperty("env", "local") + ".properties"
+                );
             }
 
-            Configuration.remote = cfg.remoteUrl();
+            Configuration.remote = remoteUrl;
 
             DesiredCapabilities caps = new DesiredCapabilities();
             caps.setCapability("selenoid:options", Map.of(
@@ -47,11 +51,13 @@ public class BaseTest {
             Configuration.browserCapabilities = caps;
         } else {
             Configuration.remote = null;
+            Configuration.browserCapabilities = null;
         }
     }
 
     @BeforeEach
     void addAllureListener() {
+        SelenideLogger.removeListener("allure");
         SelenideLogger.addListener("allure", new AllureSelenide()
                 .screenshots(true)
                 .savePageSource(false)
@@ -64,9 +70,11 @@ public class BaseTest {
         Attachments.pageSource();
         Attachments.browserConsoleLogs();
         Attachments.addVideo();
+
         closeWebDriver();
     }
 }
+
 
 
 
