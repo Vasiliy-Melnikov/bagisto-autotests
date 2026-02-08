@@ -10,10 +10,10 @@ public class Product {
     public String sku;
     public String type;
     public String name;
-    public String url;
 
-    @JsonProperty("price")
-    public String price;
+    @JsonProperty("url_key")
+    public String urlKey;
+    public Object price;
 
     @JsonProperty("formated_price")
     public String formattedPrice;
@@ -24,8 +24,12 @@ public class Product {
     public String description;
 
     @JsonProperty("images")
-    public BaseImage images;
+    public Object images;
+
+    @JsonProperty("base_image")
+    public BaseImage baseImage;
 
     public Product() {
     }
 }
+

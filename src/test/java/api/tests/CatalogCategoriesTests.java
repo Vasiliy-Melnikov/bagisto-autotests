@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static api.specs.Specs.baseShopReq;
 import static api.specs.Specs.ok200Json;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +19,7 @@ public class CatalogCategoriesTests extends ApiTestBase {
     @DisplayName("GET /categories — возвращает JSON")
     void getCategories() {
         given()
-                .spec(baseShopReq(cfg))
+                .spec(shopReq)
                 .redirects().follow(false)
                 .when()
                 .get("/categories")
@@ -35,18 +34,17 @@ public class CatalogCategoriesTests extends ApiTestBase {
     @DisplayName("GET /categories — маппится в POJO и содержит translations")
     void getCategoriesAsPojo() {
         var json = given()
-                .spec(baseShopReq(cfg))
+                .spec(shopReq)
                 .when()
                 .get("/categories")
                 .then()
-                .statusCode(200)
+                .spec(ok200Json())
                 .extract()
                 .jsonPath();
 
         List<Category> categories = json.getList("data", Category.class);
 
-        assertThat(categories).isNotNull();
-        assertThat(categories).isNotEmpty();
+        assertThat(categories).isNotNull().isNotEmpty();
 
         Category first = categories.get(0);
         assertThat(first.id).isNotNull();
@@ -61,11 +59,11 @@ public class CatalogCategoriesTests extends ApiTestBase {
     @DisplayName("GET /categories?page=1 — smoke: meta.pagination присутствует")
     void categoriesPaginationMetaPresent() {
         var json = given()
-                .spec(baseShopReq(cfg))
+                .spec(shopReq)
                 .when()
                 .get("/categories?page=1")
                 .then()
-                .statusCode(200)
+                .spec(ok200Json())
                 .extract()
                 .jsonPath();
 
@@ -82,12 +80,13 @@ public class CatalogCategoriesTests extends ApiTestBase {
     @DisplayName("DELETE /categories/{id} - method not supported (500)")
     void deleteCategoryNotSupported() {
         given()
-                .spec(baseShopReq(cfg))
+                .spec(shopReq)
                 .when()
                 .delete("/categories/1")
                 .then()
                 .statusCode(500);
     }
 }
+
 
 

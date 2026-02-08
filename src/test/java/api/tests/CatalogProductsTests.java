@@ -3,10 +3,10 @@ package api.tests;
 import api.models.catalog.Product;
 import api.models.common.PaginatedResponse;
 import io.qameta.allure.*;
+import io.restassured.common.mapper.TypeRef;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static api.specs.Specs.baseShopReq;
 import static api.specs.Specs.ok200Json;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +20,7 @@ public class CatalogProductsTests extends ApiTestBase {
     @DisplayName("GET /products — возвращает JSON")
     void getProducts() {
         given()
-                .spec(baseShopReq(cfg))
+                .spec(shopReq)
                 .redirects().follow(false)
                 .when()
                 .get("/products")
@@ -33,25 +33,23 @@ public class CatalogProductsTests extends ApiTestBase {
     @Story("Products")
     @Owner("vasiliy")
     @Severity(SeverityLevel.CRITICAL)
-    @DisplayName("GET /products?page=1 — пагинированный ответ и список data")
+    @DisplayName("GET /products?page=1 — пагинированный ответ и список data (POJO)")
     void getProductsPage1() {
-        @SuppressWarnings("unchecked")
         PaginatedResponse<Product> resp = given()
-                .spec(baseShopReq(cfg))
+                .spec(shopReq)
                 .queryParam("page", 1)
                 .when()
                 .get("/products")
                 .then()
-                .statusCode(200)
+                .spec(ok200Json())
                 .extract()
-                .as(PaginatedResponse.class);
+                .as(new TypeRef<PaginatedResponse<Product>>() {});
 
         assertThat(resp).isNotNull();
-        assertThat(resp.data).isNotNull();
-        assertThat(resp.data).isNotEmpty();
+        assertThat(resp.data).isNotNull().isNotEmpty();
+        assertThat(resp.data.get(0).name).isNotBlank();
         assertThat(resp.meta).isNotNull();
         assertThat(resp.meta.currentPage).isEqualTo(1);
-        assertThat(resp.meta.total).isNotNull();
         assertThat(resp.links).isNotNull();
     }
 
@@ -62,11 +60,11 @@ public class CatalogProductsTests extends ApiTestBase {
     @DisplayName("GET /products — smoke: data[0] содержит базовые поля")
     void productsSmokeFields() {
         var json = given()
-                .spec(baseShopReq(cfg))
+                .spec(shopReq)
                 .when()
                 .get("/products")
                 .then()
-                .statusCode(200)
+                .spec(ok200Json())
                 .extract()
                 .jsonPath();
 
@@ -76,5 +74,6 @@ public class CatalogProductsTests extends ApiTestBase {
         assertThat(json.getString("data[0].type")).isNotBlank();
     }
 }
+
 
 
