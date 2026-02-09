@@ -22,7 +22,6 @@ public class CartTests extends BaseTest {
     void addToCartFromSearch() {
         new HomePageObject()
                 .openHome()
-                .acceptCookiesIfPresent()
                 .search("shirt")
                 .resultsExist()
                 .openFirstProduct()

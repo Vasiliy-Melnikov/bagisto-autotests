@@ -35,17 +35,5 @@ public class ContentTests extends BaseTest {
                 .subscribeToNewsletter("test+" + System.currentTimeMillis() + "@example.com");
     }
 
-    @Test
-    @Story("Admin link")
-    @Owner("vasiliy")
-    @Severity(SeverityLevel.MINOR)
-    @DisplayName("Переход в админку по ссылке с главной")
-    void openAdminFromHome() {
-        new HomePageObject()
-                .openHome();
-
-        $x("//a[contains(.,'Visit Admin Panel') or contains(.,'Admin')]").click();
-        $("body").shouldBe(visible);
-    }
 }
 

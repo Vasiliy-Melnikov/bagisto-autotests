@@ -52,7 +52,6 @@ public class HomePageObject {
         open("");
         acceptCookiesIfPresent();
         prepareDemoIfNeeded();
-        acceptCookiesIfPresent();
         return this;
     }
 
