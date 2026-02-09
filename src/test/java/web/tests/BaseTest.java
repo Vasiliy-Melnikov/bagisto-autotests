@@ -25,7 +25,6 @@ public class BaseTest {
         Configuration.baseUrl = cfg.baseUrl();
         Configuration.browser = cfg.browser();
         Configuration.browserSize = cfg.browserSize();
-        Configuration.timeout = 10000;
         Configuration.pageLoadStrategy = cfg.pageLoadStrategy();
 
         if (!cfg.browserVersion().isBlank()) {

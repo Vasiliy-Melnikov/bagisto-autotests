@@ -10,7 +10,7 @@ import java.net.URL;
 public interface WebDriverConfig extends Config {
 
     @Key("baseUrl")
-    @DefaultValue("https://demo.bagisto.com")
+    @DefaultValue("")
     String baseUrl();
 
     @Key("browser")
