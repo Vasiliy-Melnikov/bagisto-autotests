@@ -2,8 +2,8 @@ package web.tests;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
-import config.WebDriverConfig;
-import config.WebDriverConfigProvider;
+import web.config.WebDriverConfig;
+import web.config.WebDriverConfigProvider;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,6 +25,7 @@ public class BaseTest {
         Configuration.baseUrl = cfg.baseUrl();
         Configuration.browser = cfg.browser();
         Configuration.browserSize = cfg.browserSize();
+        Configuration.timeout = 10000;
         Configuration.pageLoadStrategy = cfg.pageLoadStrategy();
 
         if (!cfg.browserVersion().isBlank()) {
@@ -55,8 +56,9 @@ public class BaseTest {
         Attach.screenshotAs("Last screenshot");
         Attach.pageSource();
         Attach.browserConsoleLogs();
-        closeWebDriver();
         Attach.addVideo(sId);
+        closeWebDriver();
+
     }
 }
 

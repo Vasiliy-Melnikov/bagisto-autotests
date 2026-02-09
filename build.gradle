@@ -9,7 +9,6 @@ version = '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
 }
-
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }

@@ -1,4 +1,4 @@
-package config;
+package web.config;
 
 import org.aeonbits.owner.ConfigFactory;
 
