@@ -416,6 +416,7 @@ API-тесты покрывают **smoke-, normal- и critical-сценарии
 
 ```text
 https://demo.bagisto.com/bagisto-common
+```
 
 ## ⚠️ Ограничения demo-версии Bagisto
 
@@ -428,8 +429,8 @@ https://demo.bagisto.com/bagisto-common
 2. Пройти проверку *(captcha / “I’m not a robot”)*  
 3. Нажать кнопку **Prepare Demo**  
 4. Обновить значение параметра **BASE_URL** в Jenkins или при локальном запуске
-```
----
+
+--- 
 
 ## ▶️ Build Step (Gradle)
 
