@@ -50,8 +50,8 @@ public class HomePageObject {
     @Step("Открыть главную страницу")
     public HomePageObject openHome() {
         open("");
-        acceptCookiesIfPresent();
         prepareDemoIfNeeded();
+        acceptCookiesIfPresent();
         return this;
     }
 
