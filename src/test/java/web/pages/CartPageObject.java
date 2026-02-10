@@ -1,68 +1,105 @@
 package web.pages;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
+import java.time.Duration;
+
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.WebDriverConditions.urlContaining;
 
 public class CartPageObject {
-
-    private final SelenideElement cartSummaryTitle =
-            $x("//*[normalize-space()='Cart Summary' or normalize-space()='Сводка корзины']");
-
-    private final SelenideElement applyCouponLink =
-            $x("//*[@role='button' and contains(normalize-space(),'Apply Coupon')]");
-
-    private final SelenideElement couponModalTitle =
-            $x("//h2[contains(normalize-space(),'Apply Coupon')]");
-
-    private final SelenideElement couponInput =
-            $("input[placeholder*='Enter']");
-
-    private final SelenideElement applyButton =
-            $x("//button[normalize-space()='Apply' or contains(.,'Apply')]");
-
-    private final SelenideElement couponErrorToast =
-            $x("//*[contains(.,'Coupon code is invalid') or contains(.,'invalid') or contains(.,'required')]");
-
-    @Step("Открыть корзину")
-    public CartPageObject openCart() {
-        open("/checkout/cart");
-        webdriver().shouldHave(urlContaining("/checkout/cart"));
-        cartSummaryTitle.shouldBe(visible);
-        return this;
+    private ElementsCollection applyCouponCandidates() {
+        return $$x("//*[self::span or self::a or self::button]" +
+                "[contains(normalize-space(.),'Apply Coupon')]");
     }
 
-    @Step("Страница корзины открыта")
-    public CartPageObject cartPageOpened() {
-        webdriver().shouldHave(urlContaining("/checkout/cart"));
-        cartSummaryTitle.shouldBe(visible);
-        return this;
+    private SelenideElement visibleApplyCoupon() {
+        return applyCouponCandidates()
+                .filter(visible)
+                .first();
+    }
+    private SelenideElement visibleCouponInput() {
+        return $$("input[placeholder='Enter your code'], input[name='code']")
+                .filter(visible)
+                .first();
+    }
+    private SelenideElement applyButtonNearInput(SelenideElement input) {
+        SelenideElement container = input.closest("form");
+        if (!container.exists()) {
+            container = input.closest("div");
+        }
+        return container.$x(".//button[normalize-space()='Apply']")
+                .shouldBe(visible);
     }
 
-    @Step("Открыть форму Apply Coupon")
-    public CartPageObject openApplyCoupon() {
-        applyCouponLink.scrollIntoView("{block: 'center'}").shouldBe(visible).click();
-        couponModalTitle.shouldBe(visible);
-        couponInput.shouldBe(visible);
+    private final SelenideElement couponInlineError =
+            $x("//*[contains(normalize-space(.),'The code field is required') or contains(normalize-space(.),'required')]");
+
+    private final SelenideElement couponToast =
+            $x("//*[contains(.,'Coupon code is invalid') or contains(.,'invalid')]");
+
+    @Step("Открыть модалку купона")
+    public CartPageObject openCouponModal() {
+        SelenideElement toggle = visibleApplyCoupon()
+                .shouldBe(visible, Duration.ofSeconds(30))
+                .scrollIntoView("{block:'center'}");
+
+        executeJavaScript("arguments[0].click()", toggle);
+        SelenideElement input = visibleCouponInput()
+                .shouldBe(visible);
+        executeJavaScript("arguments[0].focus()", input);
+
         return this;
     }
 
     @Step("Применить купон: {coupon}")
     public CartPageObject applyCoupon(String coupon) {
-        couponInput.shouldBe(visible).setValue(coupon);
-        applyButton.shouldBe(enabled).click();
+        openCouponModal();
+
+        SelenideElement input = visibleCouponInput()
+                .shouldBe(visible, enabled)
+                .scrollIntoView("{block:'center'}");
+        executeJavaScript(
+                "arguments[0].value='';" +
+                        "arguments[0].dispatchEvent(new Event('input',{bubbles:true}));" +
+                        "arguments[0].dispatchEvent(new Event('change',{bubbles:true}));",
+                input
+        );
+
+        input.setValue(coupon);
+        executeJavaScript(
+                "arguments[0].dispatchEvent(new Event('input',{bubbles:true}));" +
+                        "arguments[0].dispatchEvent(new Event('change',{bubbles:true}));",
+                input
+        );
+
+        input.shouldHave(value(coupon), Duration.ofSeconds(5));
+
+        SelenideElement applyBtn = applyButtonNearInput(input)
+                .shouldBe(visible, enabled);
+
+        executeJavaScript("arguments[0].click()", applyBtn);
+
         return this;
     }
 
     @Step("Ошибка купона отображается")
     public CartPageObject couponErrorVisible() {
-        couponErrorToast.shouldBe(visible);
+        if (couponInlineError.exists()) {
+            couponInlineError.shouldBe(visible, Duration.ofSeconds(10));
+        } else {
+            couponToast.shouldBe(visible, Duration.ofSeconds(10));
+        }
         return this;
     }
 }
+
+
+
+
+
 
 
 

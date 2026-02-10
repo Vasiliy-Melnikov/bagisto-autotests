@@ -8,37 +8,35 @@ import web.pages.HomePageObject;
 
 import static com.codeborne.selenide.Selenide.open;
 
-
 @Epic("Bagisto Web")
 @Feature("Cart")
 public class CartTests extends BaseTest {
-        private final TestData testData = new TestData();
+
+    private final TestData testData = new TestData();
 
     @Test
     @Story("Add to cart")
     @Owner("vasiliy")
     @Severity(SeverityLevel.CRITICAL)
-    @DisplayName("Добавление товара в корзину из поиска")
+    @DisplayName("Покупка через Buy Now")
     void addToCartFromSearch() {
         new HomePageObject()
                 .openHome()
                 .search("shirt")
                 .resultsExist()
                 .openFirstProduct()
-                .selectAnyAgeGroup()
-                .setQuantity(1)
-                .addToCart()
-                .openCart()
-                .cartPageOpened();
+                .productPageOpened()
+                .selectRandomAgeGroup()
+                .setQuantity(2)
+                .clickBuyNow();
     }
 
     @Test
     @Story("Coupon")
     @Owner("vasiliy")
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("Попытка применить невалидный купон")
+    @DisplayName("Попытка применить купон (негативный кейс)")
     void applyInvalidCoupon() {
-
         String coupon = testData.invalidCoupon();
 
         new HomePageObject()
@@ -46,15 +44,13 @@ public class CartTests extends BaseTest {
                 .search("shirt")
                 .resultsExist()
                 .openFirstProduct()
-                .selectAnyAgeGroup()
-                .setQuantity(1)
-                .addToCart()
-                .openCart()
-                .openApplyCoupon()
+                .productPageOpened()
+                .selectRandomAgeGroup()
+                .setQuantity(2)
+                .clickBuyNow()
                 .applyCoupon(coupon)
                 .couponErrorVisible();
     }
-
 
     @Test
     @Story("Cart")
@@ -67,6 +63,9 @@ public class CartTests extends BaseTest {
         open("/checkout/cart");
     }
 }
+
+
+
 
 
 

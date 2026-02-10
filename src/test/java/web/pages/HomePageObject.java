@@ -17,8 +17,11 @@ public class HomePageObject {
     private final SelenideElement newsletterEmail =
             $("input[name='email'], input[type='email']");
 
+    private final SelenideElement cookieBanner =
+            $(".js-cookie-consent");
+
     private final SelenideElement cookieAcceptButton =
-            $x("//*[contains(.,'GDPR Cookie Block')]//button[contains(.,'Accept') or contains(.,'Принять')]");
+            $x("//div[contains(@class,'js-cookie-consent')]//button[contains(normalize-space(),'Accept')]");
 
     private final SelenideElement prepareDemoButton =
             $x("//*[self::a or self::button][normalize-space()='Prepare Demo']");
@@ -26,10 +29,12 @@ public class HomePageObject {
     private final SelenideElement settingUpDemoText =
             $x("//*[contains(normalize-space(.),'Setting up demo') or contains(normalize-space(.),'Setting Up Demo')]");
 
-    @Step("Принять cookies (если баннер есть)")
+    @Step("Принять cookies (если баннер отображается)")
     public HomePageObject acceptCookiesIfPresent() {
-        if (cookieAcceptButton.exists() && cookieAcceptButton.isDisplayed()) {
-            cookieAcceptButton.shouldBe(visible).click();
+        if (cookieBanner.exists() && cookieBanner.isDisplayed()) {
+            cookieBanner.shouldBe(visible);
+            cookieAcceptButton.shouldBe(visible, enabled).click();
+            cookieBanner.should(disappear);
         }
         return this;
     }
@@ -75,8 +80,6 @@ public class HomePageObject {
         return this;
     }
 }
-
-
 
 
 

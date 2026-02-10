@@ -9,6 +9,6 @@ public class TestData {
     private static final Faker faker = new Faker(Locale.US);
 
     public String invalidCoupon() {
-        return faker.regexify("[A-Z0-9]{8}");
+        return faker.regexify("[A-Z0-9]{10}");
     }
 }
