@@ -3,6 +3,7 @@
 
 <a href="https://bagisto.com/"><img width="50%" title="Bagisto" src="images/logo.svg"></a>
 
+
 Тестовый проект по автоматизации **UI- и API-тестов**  
 для open-source e-commerce платформы **Bagisto**
 
@@ -592,14 +593,18 @@ build/allure-results
 - логи браузера
 - графики
 ---
-### *Основная страница отчёта*
+### <a href="https://jenkins.autotests.cloud/job/bagisto-autotests/35/allure/#">*Основная страница отчёта*</a>
+
+
+
 ![Allure report](images/Allurereport.jpg)
 
-### *Тест-кейсы*
+### <a href="https://jenkins.autotests.cloud/job/bagisto-autotests/35/allure/#suites">*Тест-кейсы UI*</a>
 ![Allure suites](images/AlluresuitesUI.jpg)
+### <a href="https://jenkins.autotests.cloud/job/bagisto-autotests-api/allure/#suites">*Тест-кейсы API*</a>
 ![Allure suites](images/AlluresuitesAPI.jpg)
 
-### *Графики*
+### <a href="https://jenkins.autotests.cloud/job/bagisto-autotests/35/allure/#graph">*Графики*</a>
 
 ![Allure graphs](images/Alluregraphs.jpg)
 
@@ -627,4 +632,3 @@ build/allure-results
 ![Selenoid video](images/Example.gif)
 
 ---
-
