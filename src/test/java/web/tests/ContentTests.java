@@ -5,8 +5,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import web.pages.HomePageObject;
 
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.WebDriverConditions.urlContaining;
 
 @Epic("Bagisto Web")
 @Feature("Content & Static pages")
@@ -21,7 +22,10 @@ public class ContentTests extends BaseTest {
         new HomePageObject().openHome();
 
         open("/page/privacy-policy");
-        $("body").shouldBe(visible);
+        webdriver().shouldHave(urlContaining("privacy"));
+        $$("h1,h2,main").filter(visible)
+                .findBy(matchText("(?is).*privacy.*policy.*"))
+                .shouldBe(visible);
     }
 
     @Test

@@ -5,8 +5,8 @@ import com.github.javafaker.Faker;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static io.restassured.RestAssured.given;
 
 public class CustomerRegisterHelper {
 
@@ -17,10 +17,9 @@ public class CustomerRegisterHelper {
     }
 
     public static String registerNewCustomer(RequestSpecification spec) {
-
         String firstName = faker.name().firstName();
-        String lastName = faker.name().lastName();
-        String email = "autotest_" + System.currentTimeMillis() + "@mail.com";
+        String lastName  = faker.name().lastName();
+        String email     = "autotest_" + System.currentTimeMillis() + "@mail.com";
 
         RegisterCustomerRequest body = new RegisterCustomerRequest(
                 firstName,
@@ -29,7 +28,7 @@ public class CustomerRegisterHelper {
                 STATIC_PASSWORD
         );
 
-        Response response = given()
+        Response resp = given()
                 .spec(spec)
                 .body(body)
                 .when()
@@ -39,17 +38,13 @@ public class CustomerRegisterHelper {
                 .extract()
                 .response();
 
-        String message = response.jsonPath().getString("message");
+        String message = resp.jsonPath().getString("message");
 
         assertThat(message)
-                .as("Register message. Response: %s", response.asString())
-                .containsIgnoringCase("created");
-
+                .as("Register message. Response: %s", resp.asString())
+                .isNotBlank()
+                .containsIgnoringCase("created successfully");
         return email;
-    }
-
-    public static String staticPassword() {
-        return STATIC_PASSWORD;
     }
 }
 

@@ -23,27 +23,27 @@ public class SearchResultsPageObject {
                     "]"
     );
 
-    private SelenideElement firstVisibleProductLink() {
-        productLinks.shouldHave(sizeGreaterThan(0), Duration.ofSeconds(30));
-        return productLinks.filter(visible).first().shouldBe(visible, Duration.ofSeconds(30));
-    }
-
     @Step("Проверить, что результаты поиска отображаются")
     public SearchResultsPageObject resultsExist() {
+        productLinks.shouldHave(sizeGreaterThan(0), Duration.ofSeconds(30));
         productLinks.filter(visible).shouldHave(sizeGreaterThan(0), Duration.ofSeconds(30));
         return this;
     }
 
-    @Step("Открывается первый товар из списка")
+    @Step("Открыть первый товар из списка")
     public ProductPageObject openFirstProduct() {
-        SelenideElement first = firstVisibleProductLink();
-        executeJavaScript("arguments[0].scrollIntoView({block:'center', inline:'nearest'});", first);
+        resultsExist();
+
+        SelenideElement first = productLinks.filter(visible).first()
+                .shouldBe(visible, enabled);
+        executeJavaScript("arguments[0].scrollIntoView({block:'center', inline:'center'});", first);
         sleep(200);
         executeJavaScript("arguments[0].click();", first);
 
         return new ProductPageObject();
     }
 }
+
 
 
 

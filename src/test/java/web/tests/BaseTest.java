@@ -45,6 +45,7 @@ public class BaseTest {
     }
     @BeforeEach
     void addAllureListener() {
+        SelenideLogger.removeListener("allure");
         SelenideLogger.addListener("allure", new AllureSelenide()
                 .screenshots(true)
                 .savePageSource(false)

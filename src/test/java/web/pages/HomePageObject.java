@@ -16,6 +16,13 @@ public class HomePageObject {
 
     private final SelenideElement newsletterEmail =
             $("input[name='email'], input[type='email']");
+    private final SelenideElement newsletterSuccess =
+            $x("//*[contains(translate(normalize-space(.)," +
+                    "'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'), 'subscrib')" +
+                    " and (contains(translate(normalize-space(.)," +
+                    "'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'), 'success')" +
+                    " or contains(translate(normalize-space(.)," +
+                    "'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'), 'thank'))]");
 
     private final SelenideElement cookieBanner =
             $(".js-cookie-consent");
@@ -72,11 +79,15 @@ public class HomePageObject {
 
     @Step("Подписаться на newsletter: {email}")
     public HomePageObject subscribeToNewsletter(String email) {
-        newsletterEmail.scrollTo().shouldBe(visible, Duration.ofSeconds(20)).setValue(email);
+        newsletterEmail.scrollTo()
+                .shouldBe(visible, Duration.ofSeconds(20))
+                .setValue(email);
+
         newsletterEmail.closest("form")
                 .$("button[type='submit']")
                 .scrollTo()
                 .click();
+        newsletterSuccess.shouldBe(visible, Duration.ofSeconds(20));
         return this;
     }
 }

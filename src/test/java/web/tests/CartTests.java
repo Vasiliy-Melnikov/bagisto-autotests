@@ -1,12 +1,17 @@
 package web.tests;
 
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import web.data.TestData;
 import web.pages.HomePageObject;
 
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.WebDriverConditions.urlContaining;
 
 @Epic("Bagisto Web")
 @Feature("Cart")
@@ -56,12 +61,27 @@ public class CartTests extends BaseTest {
     @Story("Cart")
     @Owner("vasiliy")
     @Severity(SeverityLevel.MINOR)
-    @DisplayName("Корзина открывается по ссылке cart")
+    @DisplayName("Корзина открывается по прямой ссылке /checkout/cart")
     void cartOpenByLink() {
-        new HomePageObject()
-                .openHome();
+        new HomePageObject().openHome();
+
         open("/checkout/cart");
+        webdriver().shouldHave(urlContaining("/checkout/cart"));
+        $("main#main").shouldBe(visible);
+        $("ol li[aria-current='page']").shouldHave(text("Cart"));
+
+        SelenideElement empty = $("p[role='heading']");
+        ElementsCollection cartContent = $$("main [data-testid*='cart'], main table, main [class*='cart'], main [class*='checkout']");
+
+        Wait().until(driver -> empty.isDisplayed() || cartContent.filter(visible).size() > 0);
+
+        if (empty.isDisplayed()) {
+            empty.shouldHave(text("You don’t have a product in your cart."));
+        } else {
+            cartContent.filter(visible).shouldHave(sizeGreaterThan(0));
+        }
     }
+
 }
 
 

@@ -1,5 +1,8 @@
 # Проект по автоматизации тестирования **Bagisto Demo Store**
 
+
+<a href="https://bagisto.com/"><img width="50%" title="Bagisto" src="images/logo.svg"></a>
+
 Тестовый проект по автоматизации **UI- и API-тестов**  
 для open-source e-commerce платформы **Bagisto**
 
@@ -25,20 +28,55 @@
 ---
 
 ## 🛠 Технологии и инструменты
+<p align="center"> 
+<a href="https://www.jetbrains.com/idea/"><img width="6%" title="IntelliJ IDEA" src="images/Intelij_IDEA.svg"></a> 
+<a href="https://www.java.com/"><img width="6%" title="Java" src="images/Java.svg"></a>
+<a href="https://selenide.org/"><img width="6%" title="Selenide" src="images/Selenide.svg"></a>
+<a href="https://aerokube.com/selenoid/"><img width="6%" title="Selenoid" src="images/Selenoid.svg"></a>
+<a href="https://github.com/allure-framework/allure2"><img width="6%" title="Allure Report" src="images/Allure_Report.svg"></a>
+<a href="https://gradle.org/"><img width="6%" title="Gradle" src="images/Gradle.svg"></a>
+<a href="https://junit.org/junit5/"><img width="6%" title="JUnit5" src="images/JUnit5.svg"></a>
+<a href="https://github.com/"><img width="6%" title="GitHub" src="images/GitHub.svg"></a>
+<a href="https://www.jenkins.io/"><img width="6%" title="Jenkins" src="images/Jenkins.svg"></a>
+<a href="https://web.telegram.org/"><img width="6%" title="Telegram" src="images/Telegram.svg"></a>
+<a href="https://rest-assured.io/"><img width="6%" title="rest-assured" src="images/rest-assured.png"></a>
+</p>
 
-| Технология | Назначение |
-|-----------|-----------|
-| **Java 17** | язык разработки |
-| **Gradle** | система сборки |
-| **JUnit 5** | тестовый фреймворк |
-| **Selenide** | UI-автоматизация |
-| **REST Assured** | API-тестирование |
-| **Allure** | отчёты |
-| **Jenkins** | CI/CD |
-| **Owner** | управление конфигурациями |
-| **Lombok** | модели данных |
-| **Jackson** | JSON сериализация |
 
+
+#### Для работы с UI-тестами в данном проекте используются:
+* язык  <code>Java</code>;
+* фреймворк для тестирования <code>Selenide</code>;
+* сборщик  <code>Gradle</code>;
+* фреймворк модульного тестирования  <code>JUnit 5</code>;
+* запуск браузеров с помошью <code>Selenoid</code>;
+* джоба для удалённого запуска в <code>Jenkins</code>;
+* отчёт в <code>Allure Report</code>;
+* отправка результатов при помощи бота в <code>Telegram</code>.
+
+#### Для работы с API-тестами в данном проекте используются:
+* библиотека Java для автоматизированного тестирования и валидации RESTful API <code>REST Assured</code>;
+* управление конфигурациями <code>Owner</code>;
+* JSON сериализация <code>Jackson</code>;
+* модели данных <code>Lombok</code>;
+* сборщик <code>Gradle</code>;
+* джоба для удалённого запуска в <code>Jenkins</code>;
+* отчёт в <code>Allure Report</code>;
+* отправка результатов при помощи бота в <code>Telegram</code>.
+
+
+#### Содержание Allure-отчёта для UI-теста:
+* Шаги теста;
+* Скриншот страницы на последнем шаге;
+* Page Source;
+* Логи браузерной консоли;
+* Видео выполнения автотеста.
+
+
+#### Содержание Allure-отчёта для api теста:
+* Request api запроса;
+* Response api запроса;
+* Результат проверки response.
 ---
 
 <a id="structure"></a>
@@ -412,10 +450,12 @@ API-тесты покрывают **smoke-, normal- и critical-сценарии
 ---
 
 #### 🔹 BASE_URL *(String Parameter)*
-Базовый URL тестируемого приложения:
+Базовый URL тестируемого сайта:
 
 ```text
 https://demo.bagisto.com/bagisto-common
+или 
+https://demo.bagisto.com/bagisto-46-28-66-200
 ```
 
 ## ⚠️ Ограничения demo-версии Bagisto
@@ -509,13 +549,15 @@ notifications/config.json
 Минимальный запуск UI-тестов:
 
 ```bash
-./gradlew clean webTest -DbaseUrl=https://demo.bagisto.com/bagisto-common
+.\gradlew clean webTest -DbaseUrl=https://demo.bagisto.com/bagisto-common
+или
+.\gradlew clean webtest -DbaseUrl=https://demo.bagisto.com/bagisto-46-28-66-200
 ```
 
 ## 🔌 Запуск API-тестов
 
 ```bash
-./gradlew clean apiTest
+.\gradlew clean apiTest
 ```
 API-тесты:
 
