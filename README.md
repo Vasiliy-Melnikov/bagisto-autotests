@@ -450,7 +450,7 @@ API-тесты покрывают **smoke-, normal- и critical-сценарии
 
 ---
 
-#### 🔹 BASE_URL *(String Parameter)*
+#### 🔹 BASE_URL *(Choice Parameter)*
 Базовый URL тестируемого сайта:
 
 ```text
