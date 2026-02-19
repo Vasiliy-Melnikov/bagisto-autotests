@@ -3,11 +3,8 @@ package web.tests;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import web.pages.ContentPageObject;
 import web.pages.HomePageObject;
-
-import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.WebDriverConditions.urlContaining;
 
 @Epic("Bagisto Web")
 @Feature("Content & Static pages")
@@ -17,16 +14,14 @@ public class ContentTests extends BaseTest {
     @Story("Footer pages")
     @Owner("vasiliy")
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("Открывается страница Privacy Policy из футера")
+    @DisplayName("Открывается страница Privacy Policy")
     void openPrivacyPolicy() {
         new HomePageObject().openHome();
-
-        open("/page/privacy-policy");
-        webdriver().shouldHave(urlContaining("privacy"));
-        $$("h1,h2,main").filter(visible)
-                .findBy(matchText("(?is).*privacy.*policy.*"))
-                .shouldBe(visible);
+        new ContentPageObject()
+                .openPrivacyPolicyByDirectLink()
+                .privacyPolicyOpened();
     }
+
 
     @Test
     @Story("Newsletter")
@@ -35,7 +30,8 @@ public class ContentTests extends BaseTest {
     @DisplayName("Подписка на newsletter (позитив/смоук)")
     void newsletterSubscribe() {
         new HomePageObject()
-                .openHome()
+                .openHome();
+        new ContentPageObject()
                 .subscribeToNewsletter("test+" + System.currentTimeMillis() + "@example.com");
     }
 

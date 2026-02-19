@@ -1,6 +1,7 @@
 package web.pages;
 
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
@@ -8,6 +9,7 @@ import java.time.Duration;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.WebDriverConditions.urlContaining;
 
 public class CartPageObject {
     private ElementsCollection applyCouponCandidates() {
@@ -92,6 +94,29 @@ public class CartPageObject {
         } else {
             couponToast.shouldBe(visible, Duration.ofSeconds(10));
         }
+        return this;
+    }
+    @Step("Открыть страницу корзины")
+    public CartPageObject openCart() {
+        com.codeborne.selenide.Selenide.open("/checkout/cart");
+        return this;
+    }
+
+    @Step("Страница корзины открыта")
+    public CartPageObject cartPageOpened() {
+        webdriver().shouldHave(urlContaining("/checkout/cart"));
+        $("main#main").shouldBe(visible);
+        $("ol li[aria-current='page']").shouldHave(text("Cart"));
+        return this;
+    }
+
+    @Step("Корзина отрисована (empty или with items)")
+    public CartPageObject cartRendered() {
+        $("main").shouldHave(or(
+                "cart rendered",
+                matchText("(?is).*You don’t have a product in your cart\\..*"),
+                matchText("(?is).*(Subtotal|Cart Totals|Proceed to Checkout|Checkout).*")
+        ));
         return this;
     }
 }
